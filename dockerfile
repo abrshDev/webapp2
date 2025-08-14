@@ -1,6 +1,7 @@
 # Use a maintained prebuilt Node + Chromium image
 FROM browserless/chrome:latest
 
+
 WORKDIR /app
 
 # Copy package files and install dependencies
