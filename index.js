@@ -25,12 +25,12 @@ app.get("/api/instagram/:username", async (req, res) => {
         "--disable-setuid-sandbox",
         "--disable-blink-features=AutomationControlled",
       ],
+      // Added default executable path for Render/Replit
+      executablePath:
+        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
     };
-    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
-      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
-    }
-    browser = await puppeteer.launch(launchOptions);
 
+    browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
 
     // Rotate user agent
