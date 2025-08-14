@@ -1,5 +1,5 @@
-# Use a prebuilt Node + Chromium image
-FROM browserless/chrome:1.81-chrome-stable-node20
+# Use a maintained prebuilt Node + Chromium image
+FROM browserless/chrome:latest
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ RUN npm ci --only=production
 # Copy app files
 COPY . .
 
-# Set Puppeteer executable path (already correct in this image)
+# Set Puppeteer executable path
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Expose port
