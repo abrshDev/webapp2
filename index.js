@@ -1,9 +1,11 @@
+// index.js
 import express from "express";
-import puppeteer from "puppeteer-extra";
+import puppeteer from "puppeteer-core";
+import puppeteerExtra from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import UserAgent from "user-agents";
 
-puppeteer.use(StealthPlugin());
+puppeteerExtra.use(StealthPlugin());
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,18 +27,18 @@ app.get("/api/instagram/:username", async (req, res) => {
         "--disable-setuid-sandbox",
         "--disable-blink-features=AutomationControlled",
       ],
-      // Added default executable path for Render/Replit
+      // Windows Chrome path
       executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium-browser",
+        process.env.PUPPETEER_EXECUTABLE_PATH ||
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
     };
 
-    browser = await puppeteer.launch(launchOptions);
+    browser = await puppeteerExtra.launch(launchOptions);
     const page = await browser.newPage();
 
-    // Rotate user agent
     await page.setUserAgent(getRandomUserAgent());
 
-    // Add random delay to avoid robotic patterns
+    // Small random delay to reduce detection
     await page.waitForTimeout(1000 + Math.floor(Math.random() * 2000));
 
     await page.goto(`https://www.instagram.com/${username}/`, {
@@ -44,7 +46,7 @@ app.get("/api/instagram/:username", async (req, res) => {
       timeout: 60000,
     });
 
-    // Check if IG is asking to log in
+    // Check for login wall
     const loginWall = await page.$("input[name='username']");
     if (loginWall) {
       throw new Error(
